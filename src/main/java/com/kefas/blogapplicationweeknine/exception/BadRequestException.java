@@ -1,5 +1,6 @@
 package com.kefas.blogapplicationweeknine.exception;
 
+import com.kefas.blogapplicationweeknine.response.ApiResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
