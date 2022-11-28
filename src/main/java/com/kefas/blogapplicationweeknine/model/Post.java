@@ -2,6 +2,7 @@ package com.kefas.blogapplicationweeknine.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kefas.blogapplicationweeknine.model.audit.UserBaseClass;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class Post extends UserBaseClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

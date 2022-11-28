@@ -1,6 +1,7 @@
 package com.kefas.blogapplicationweeknine.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.kefas.blogapplicationweeknine.model.audit.UserBaseClass;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Photo {
+public class Photo extends UserBaseClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

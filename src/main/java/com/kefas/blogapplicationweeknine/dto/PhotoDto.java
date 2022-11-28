@@ -3,7 +3,6 @@ package com.kefas.blogapplicationweeknine.dto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import javax.validation.constraints.NotBlank;
 
 @Setter
