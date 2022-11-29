@@ -10,8 +10,8 @@ import com.kefas.blogapplicationweeknine.repositories.PostRepo;
 import com.kefas.blogapplicationweeknine.repositories.UserRepo;
 import com.kefas.blogapplicationweeknine.response.PostResponse;
 import com.kefas.blogapplicationweeknine.services.PostService;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,15 +22,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class PostServiceImpl implements PostService {
 
+    @Autowired
     private PostRepo postRepo;
 
+    @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
     private UserRepo userRepo;
 
+    @Autowired
     private CategoryRepo categoryRepo;
 
     @Override
@@ -43,8 +46,8 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "category id ", categoryId));
 
         Post post = this.modelMapper.map(postDto, Post.class);
-        post.setImageName("default.png");
-        post.setCreatedDate(new Date());
+        post.setImageName("logo.png");
+        post.setAddedDate(new Date());
         post.setUser(user);
         post.setCategory(category);
 

@@ -8,21 +8,26 @@ import com.kefas.blogapplicationweeknine.exceptions.ResourceNotFoundException;
 import com.kefas.blogapplicationweeknine.repositories.RoleRepo;
 import com.kefas.blogapplicationweeknine.repositories.UserRepo;
 import com.kefas.blogapplicationweeknine.services.UserService;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
+	@Autowired
 	private UserRepo userRepo;
 
+	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
 	private RoleRepo roleRepo;
 
 	@Override
@@ -41,7 +46,7 @@ public class UserServiceImpl implements UserService {
 		user.setName(userDto.getName());
 		user.setEmail(userDto.getEmail());
 		user.setPassword(userDto.getPassword());
-		user.setPhoneNumber(userDto.getAbout());
+		user.setAbout(userDto.getAbout());
 
 		User updatedUser = this.userRepo.save(user);
 		UserDto userDto1 = this.userToDto(updatedUser);
@@ -76,6 +81,12 @@ public class UserServiceImpl implements UserService {
 
 	public User dtoToUser(UserDto userDto) {
 		User user = this.modelMapper.map(userDto, User.class);
+
+		// user.setId(userDto.getId());
+		// user.setName(userDto.getName());
+		// user.setEmail(userDto.getEmail());
+		// user.setAbout(userDto.getAbout());
+		// user.setPassword(userDto.getPassword());
 		return user;
 	}
 
@@ -89,6 +100,10 @@ public class UserServiceImpl implements UserService {
 
 		User user = this.modelMapper.map(userDto, User.class);
 
+		// encoded the password
+		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+		// roles
 		Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
 
 		user.getRoles().add(role);
