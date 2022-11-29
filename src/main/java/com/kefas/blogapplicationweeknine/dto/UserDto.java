@@ -1,35 +1,51 @@
 package com.kefas.blogapplicationweeknine.dto;
 
-import com.kefas.blogapplicationweeknine.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kefas.blogapplicationweeknine.dto.RoleDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
+@NoArgsConstructor
 @Setter
 @Getter
-@ToString
-public class UserDto{
+public class UserDto {
 
-    @NotBlank(message = "firstname should not be empty")
-    private String firstname;
+	private int id;
 
-    @NotBlank(message = "lastname should not be empty")
-    private String lastname;
+	@NotEmpty
+	@Size(min = 4, message = "Name must be min of 4 characters !!")
+	private String name;
 
-    @NotBlank(message = "email should not be blank")
-    private String email;
+	@Email(message = "Email address is not valid !!")
+	@NotEmpty(message = "Email is required !!")
+	private String email;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+	@NotEmpty
+	@Size(min = 3, max = 10, message = "Password must be min of 3 chars and max of 10 chars !!")
+	private String password;
 
-    @NotBlank(message = "phoneNumber should not be blank")
-    private String phoneNumber;
-
-    @NotBlank(message = "password should not be blank")
-    private String password;
+	@NotEmpty
+	private String about;
+	
+	private Set<RoleDto> roles = new HashSet<>();
+	
+	
+	@JsonIgnore
+	public String getPassword() {
+		return this.password;
+	}
+	
+	@JsonProperty
+	public void setPassword(String password) {
+		this.password=password;
+	}
 
 }

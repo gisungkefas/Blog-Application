@@ -1,29 +1,16 @@
 package com.kefas.blogapplicationweeknine.response;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-public class ApiResponse<T> implements Serializable {
+@AllArgsConstructor
+public class ApiResponse {
 
-    private String message;
-
-    private LocalDateTime timeStamp;
-
-    private T data;
-
-    public ApiResponse(String message, LocalDateTime timeStamp, T data) {
-        this.message = message;
-        this.timeStamp = timeStamp;
-        this.data = data;
-    }
-
-    public ApiResponse(String message, LocalDateTime timeStamp) {
-        this.message = message;
-        this.timeStamp = timeStamp;
-    }
+	private String message;
+	private boolean success;
 }

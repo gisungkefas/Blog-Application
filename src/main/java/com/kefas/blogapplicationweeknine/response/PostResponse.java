@@ -1,12 +1,24 @@
 package com.kefas.blogapplicationweeknine.response;
 
-import lombok.Data;
+import com.kefas.blogapplicationweeknine.dto.PostDto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+import java.util.List;
+
+@NoArgsConstructor
+@Getter
+@Setter
 public class PostResponse {
-    private String title;
 
-    private String body;
-
-    private String category;
+	
+	private List<PostDto> content;
+	private int pageNumber;
+	private int pageSize;
+	private long totalElements;
+	private int totalPages;	
+	private boolean lastPage;
+	
+	
 }

@@ -1,19 +1,38 @@
 package com.kefas.blogapplicationweeknine.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-@Setter
 @Getter
-@ToString
+@Setter
+@NoArgsConstructor
 public class PostDto {
 
-    @NotBlank(message = "title should not be empty")
-    private String title;
+	private Integer postId;
+	
+	private String title;
+	
+	private String content;
+	
+	private String imageName;
+	
+	private Date addedDate;	
+	
+	private CategoryDto category;
 
-    @NotBlank(message = "post body should not be empty")
-    private String body;
+	private UserDto user;
+	
+	private Set<CommentDto> comments=new HashSet<>();
+
+	
+	
+	
+	
+	
+	
 }
