@@ -1,15 +1,14 @@
 package com.kefas.blogapplicationweeknine.services.impl;
 
 import com.kefas.blogapplicationweeknine.dto.PostDto;
-import com.kefas.blogapplicationweeknine.entities.Category;
 import com.kefas.blogapplicationweeknine.entities.Post;
 import com.kefas.blogapplicationweeknine.entities.User;
 import com.kefas.blogapplicationweeknine.exceptions.ResourceNotFoundException;
-import com.kefas.blogapplicationweeknine.repositories.CategoryRepo;
 import com.kefas.blogapplicationweeknine.repositories.PostRepo;
 import com.kefas.blogapplicationweeknine.repositories.UserRepo;
 import com.kefas.blogapplicationweeknine.response.PostResponse;
 import com.kefas.blogapplicationweeknine.services.PostService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,10 +21,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class PostServiceImpl implements PostService {
 
     @Autowired
-    private PostRepo postRepo;
+    private final PostRepo postRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -33,23 +33,17 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserRepo userRepo;
 
-    @Autowired
-    private CategoryRepo categoryRepo;
-
     @Override
-    public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
+    public PostDto createPost(PostDto postDto, Integer userId) {
 
         User user = this.userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User ", "User id", userId));
 
-        Category category = this.categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "category id ", categoryId));
 
         Post post = this.modelMapper.map(postDto, Post.class);
         post.setImageName("logo.png");
         post.setAddedDate(new Date());
         post.setUser(user);
-        post.setCategory(category);
 
         Post newPost = this.postRepo.save(post);
 
@@ -62,12 +56,9 @@ public class PostServiceImpl implements PostService {
         Post post = this.postRepo.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post ", "post id", postId));
 
-        Category category = this.categoryRepo.findById(postDto.getCategory().getCategoryId()).get();
-
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post.setImageName(postDto.getImageName());
-        post.setCategory(category);
 
 
         Post updatedPost = this.postRepo.save(post);
@@ -118,18 +109,6 @@ public class PostServiceImpl implements PostService {
         return this.modelMapper.map(post, PostDto.class);
     }
 
-    @Override
-    public List<PostDto> getPostsByCategory(Integer categoryId) {
-
-        Category cat = this.categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "category id", categoryId));
-        List<Post> posts = this.postRepo.findByCategory(cat);
-
-        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toList());
-
-        return postDtos;
-    }
 
     @Override
     public List<PostDto> getPostsByUser(Integer userId) {

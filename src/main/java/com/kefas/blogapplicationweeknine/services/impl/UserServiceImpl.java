@@ -23,9 +23,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+//
+//	@Autowired
+//	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private RoleRepo roleRepo;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 		user.setName(userDto.getName());
 		user.setEmail(userDto.getEmail());
 		user.setPassword(userDto.getPassword());
-		user.setAbout(userDto.getAbout());
+		user.setPhoneNumber(userDto.getPhoneNumber());
 
 		User updatedUser = this.userRepo.save(user);
 		UserDto userDto1 = this.userToDto(updatedUser);
@@ -100,10 +100,9 @@ public class UserServiceImpl implements UserService {
 
 		User user = this.modelMapper.map(userDto, User.class);
 
-		// encoded the password
-		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+//		// encoded the password
+//		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
-		// roles
 		Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
 
 		user.getRoles().add(role);

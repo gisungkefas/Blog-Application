@@ -2,12 +2,13 @@ package com.kefas.blogapplicationweeknine.services;
 
 import com.kefas.blogapplicationweeknine.dto.PostDto;
 import com.kefas.blogapplicationweeknine.response.PostResponse;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
 
+@Service
 public interface PostService {
 
-	PostDto createPost(PostDto postDto, Integer userId, Integer categoryId);
+	PostDto createPost(PostDto postDto, Integer userId);
 
 	PostDto updatePost(PostDto postDto, Integer postId);
 
@@ -16,8 +17,6 @@ public interface PostService {
 	PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
 	PostDto getPostById(Integer postId);
-	
-	List<PostDto> getPostsByCategory(Integer categoryId);
 
 	List<PostDto> getPostsByUser(Integer userId);
 

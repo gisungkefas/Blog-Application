@@ -33,7 +33,7 @@ public class UserDto {
 	private String password;
 
 	@NotEmpty
-	private String about;
+	private String phoneNumber;
 	
 	private Set<RoleDto> roles = new HashSet<>();
 	

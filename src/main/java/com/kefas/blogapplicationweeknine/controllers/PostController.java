@@ -6,8 +6,8 @@ import com.kefas.blogapplicationweeknine.response.ApiResponse;
 import com.kefas.blogapplicationweeknine.response.PostResponse;
 import com.kefas.blogapplicationweeknine.services.FileService;
 import com.kefas.blogapplicationweeknine.services.PostService;
+import lombok.AllArgsConstructor;
 import org.hibernate.engine.jdbc.StreamUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,40 +19,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/")
 public class PostController {
 
-	@Autowired
 	private PostService postService;
 
-	@Autowired
 	private FileService fileService;
+//
+//	@Value("${project.image}")
+//	private String path;
 
-	@Value("${project.image}")
-	private String path;
-
-	@PostMapping("/user/{userId}/category/{categoryId}/posts")
-	public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto, @PathVariable Integer userId,
-											  @PathVariable Integer categoryId) {
-		PostDto createPost = this.postService.createPost(postDto, userId, categoryId);
-		return new ResponseEntity<PostDto>(createPost, HttpStatus.CREATED);
+	@PostMapping("/user/{userId}/posts")
+	public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto,
+											  @PathVariable Integer userId) {
+		PostDto createPost = this.postService.createPost(postDto, userId);
+		return new ResponseEntity<>(createPost, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/user/{userId}/posts")
 	public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable Integer userId) {
 
 		List<PostDto> posts = this.postService.getPostsByUser(userId);
-		return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
-
-	}
-
-	@GetMapping("/category/{categoryId}/posts")
-	public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable Integer categoryId) {
-
-		List<PostDto> posts = this.postService.getPostsByCategory(categoryId);
-		return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
-
+		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
 
 	@GetMapping("/posts")
@@ -63,14 +53,14 @@ public class PostController {
 			@RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir) {
 
 		PostResponse postResponse = this.postService.getAllPost(pageNumber, pageSize, sortBy, sortDir);
-		return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
+		return new ResponseEntity<>(postResponse, HttpStatus.OK);
 	}
 
 	@GetMapping("/posts/{postId}")
 	public ResponseEntity<PostDto> getPostById(@PathVariable Integer postId) {
 
 		PostDto postDto = this.postService.getPostById(postId);
-		return new ResponseEntity<PostDto>(postDto, HttpStatus.OK);
+		return new ResponseEntity<>(postDto, HttpStatus.OK);
 
 	}
 
@@ -84,14 +74,14 @@ public class PostController {
 	public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId) {
 
 		PostDto updatePost = this.postService.updatePost(postDto, postId);
-		return new ResponseEntity<PostDto>(updatePost, HttpStatus.OK);
+		return new ResponseEntity<>(updatePost, HttpStatus.OK);
 
 	}
 
 	@GetMapping("/posts/search/{keywords}")
 	public ResponseEntity<List<PostDto>> searchPostByTitle(@PathVariable("keywords") String keywords) {
 		List<PostDto> result = this.postService.searchPosts(keywords);
-		return new ResponseEntity<List<PostDto>>(result, HttpStatus.OK);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@PostMapping("/post/image/upload/{postId}")
@@ -100,11 +90,10 @@ public class PostController {
 
 		PostDto postDto = this.postService.getPostById(postId);
 		
-		String fileName = this.fileService.uploadImage(path, image);
-		postDto.setImageName(fileName);
+//		String fileName = this.fileService.uploadImage(path, image);
+//		postDto.setImageName(fileName);
 		PostDto updatePost = this.postService.updatePost(postDto, postId);
-		return new ResponseEntity<PostDto>(updatePost, HttpStatus.OK);
-
+		return new ResponseEntity<>(updatePost, HttpStatus.OK);
 	}
 
     @GetMapping(value = "/post/image/{imageName}",produces = MediaType.IMAGE_JPEG_VALUE)
@@ -113,9 +102,9 @@ public class PostController {
             HttpServletResponse response
     ) throws IOException {
 
-        InputStream resource = this.fileService.getResource(path, imageName);
+//        InputStream resource = this.fileService.getResource(path, imageName);
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        StreamUtils.copy(resource,response.getOutputStream())   ;
+//        StreamUtils.copy(resource,response.getOutputStream());
 
     }
 

@@ -49,7 +49,6 @@ public class BlogApplicationWeekNineApplication implements CommandLineRunner {
             });
 
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
 

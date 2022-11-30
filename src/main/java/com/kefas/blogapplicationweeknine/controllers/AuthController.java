@@ -39,8 +39,8 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthRequest request) throws Exception {
-		this.authenticate(request.getUsername(), request.getPassword());
-		UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUsername());
+		this.authenticate(request.getEmail(), request.getPassword());
+		UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getEmail());
 		String token = this.jwtTokenHelper.generateToken(userDetails);
 
 		JwtAuthResponse response = new JwtAuthResponse();
@@ -59,7 +59,7 @@ public class AuthController {
 			this.authenticationManager.authenticate(authenticationToken);
 
 		} catch (BadCredentialsException e) {
-			System.out.println("Invalid Detials !!");
+			System.out.println("Invalid Details !!");
 			throw new ApiException("Invalid username or password !!");
 		}
 
