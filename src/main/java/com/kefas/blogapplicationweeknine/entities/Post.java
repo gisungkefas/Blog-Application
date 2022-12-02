@@ -1,39 +1,43 @@
 package com.kefas.blogapplicationweeknine.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
-@Table(name = "posts")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Post {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer postId;
+	private Long postId;
 
-	@Column(name = "post_title", length = 100, nullable = false)
 	private String title;
-
-	@Column(length = 1000000000)
 	private String content;
 
-	private String imageName;
+	private String imageUrl;
 
-	private Date addedDate;
+	@CreationTimestamp
+	private LocalDateTime createdDate;
+
+	@UpdateTimestamp
+	private LocalDateTime updatedDate;
 
 	@ManyToOne
+	@JoinColumn(name = "userId")
 	private User user;
-	
-	
-	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
-	private Set<Comment> comments=new HashSet<>();
+
+	@OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL)
+//	@ToString.Exclude
+//	@JsonIgnore
+	private List<Comment> comments;
 
 }

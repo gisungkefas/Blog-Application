@@ -1,25 +1,26 @@
 package com.kefas.blogapplicationweeknine.services;
 
 import com.kefas.blogapplicationweeknine.dto.PostDto;
-import com.kefas.blogapplicationweeknine.response.PostResponse;
+import com.kefas.blogapplicationweeknine.entities.Post;
+import com.kefas.blogapplicationweeknine.response.PagedResponse;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public interface PostService {
 
-	PostDto createPost(PostDto postDto, Integer userId);
+	PostDto createPost(PostDto postDto, Long userId);
 
-	PostDto updatePost(PostDto postDto, Integer postId);
+	PostDto updatePost(PostDto postDto, Long postId);
 
-	void deletePost(Integer postId);
-	
-	PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+	String deletePost(PostDto postDto, Long postId);
 
-	PostDto getPostById(Integer postId);
+	Post getPostById(Long postId);
 
-	List<PostDto> getPostsByUser(Integer userId);
+	List<Post> getAllPosts();
 
-	List<PostDto> searchPosts(String keyword);
+//	List<PostDto> searchPsts(String keyword);
+
+	String likePost(Long postId, Long userId);
 
 }

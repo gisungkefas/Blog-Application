@@ -1,11 +1,15 @@
 package com.kefas.blogapplicationweeknine.services;
 
 import com.kefas.blogapplicationweeknine.dto.CommentDto;
+import com.kefas.blogapplicationweeknine.entities.Comment;
+
+import java.util.List;
 
 public interface CommentService {
 
-	CommentDto createComment(CommentDto commentDto, Integer postId);
+	CommentDto createComment(CommentDto commentDto, Long postId);
 
-	void deleteComment(Integer commentId);
+	List<Comment> getAllPostComment(Long postId);
 
+	String deleteComment(Long commentId, CommentDto commentDto);
 }

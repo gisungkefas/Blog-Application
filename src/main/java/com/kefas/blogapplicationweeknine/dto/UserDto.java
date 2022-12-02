@@ -2,12 +2,11 @@ package com.kefas.blogapplicationweeknine.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kefas.blogapplicationweeknine.dto.RoleDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
@@ -18,34 +17,19 @@ import java.util.Set;
 @Getter
 public class UserDto {
 
-	private int id;
+	@NotBlank(message = "First Name should not be Empty")
+	private String firstname;
 
-	@NotEmpty
-	@Size(min = 4, message = "Name must be min of 4 characters !!")
-	private String name;
+	@NotBlank(message = "Last Name should not be Empty")
+	private String lastname;
 
-	@Email(message = "Email address is not valid !!")
-	@NotEmpty(message = "Email is required !!")
+	@NotBlank(message = "Email not Valid")
 	private String email;
 
-	@NotEmpty
-	@Size(min = 3, max = 10, message = "Password must be min of 3 chars and max of 10 chars !!")
-	private String password;
-
-	@NotEmpty
+	@NotBlank(message = "Phone Number should not be Empty")
 	private String phoneNumber;
-	
-	private Set<RoleDto> roles = new HashSet<>();
-	
-	
-	@JsonIgnore
-	public String getPassword() {
-		return this.password;
-	}
-	
-	@JsonProperty
-	public void setPassword(String password) {
-		this.password=password;
-	}
+
+	@NotBlank(message = "Password should not be Empty")
+	private String password;
 
 }

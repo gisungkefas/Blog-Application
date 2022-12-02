@@ -3,47 +3,65 @@ package com.kefas.blogapplicationweeknine.services.impl;
 import com.kefas.blogapplicationweeknine.dto.CommentDto;
 import com.kefas.blogapplicationweeknine.entities.Comment;
 import com.kefas.blogapplicationweeknine.entities.Post;
-import com.kefas.blogapplicationweeknine.exceptions.ResourceNotFoundException;
-import com.kefas.blogapplicationweeknine.repositories.CommentRepo;
-import com.kefas.blogapplicationweeknine.repositories.PostRepo;
+import com.kefas.blogapplicationweeknine.entities.User;
+import com.kefas.blogapplicationweeknine.exceptions.CommentNotFoundException;
+import com.kefas.blogapplicationweeknine.exceptions.PostNotFoundException;
+import com.kefas.blogapplicationweeknine.exceptions.UserNotFoundException;
+import com.kefas.blogapplicationweeknine.repositories.CommentRepository;
+import com.kefas.blogapplicationweeknine.repositories.PostRepository;
+import com.kefas.blogapplicationweeknine.repositories.UserRepository;
 import com.kefas.blogapplicationweeknine.services.CommentService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-	@Autowired
-	private PostRepo postRepo;
+	private final PostRepository postRepository;
 
-	@Autowired
-	private CommentRepo commentRepo;
+	private final CommentRepository commentRepository;
 
-	@Autowired
-	private ModelMapper modelMapper;
+	private final UserRepository userRepository;
 
 	@Override
-	public CommentDto createComment(CommentDto commentDto, Integer postId) {
+	public CommentDto createComment(CommentDto commentDto, Long postId) {
 
-		Post post = this.postRepo.findById(postId)
-				.orElseThrow(() -> new ResourceNotFoundException("Post", "post id ", postId));
+		String content = commentDto.getContent();
 
-		Comment comment = this.modelMapper.map(commentDto, Comment.class);
+		Long userId = commentDto.getUserId();
 
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> {
+					throw new PostNotFoundException ("Post with ID: " + postId + " Not Found");
+				});
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User with ID: " + userId + " Not Found"));
+		Comment comment = new Comment();
+		comment.setContent(content);
 		comment.setPost(post);
+		comment.setUser(user);
+		commentRepository.save(comment);
 
-		Comment savedComment = this.commentRepo.save(comment);
-
-		return this.modelMapper.map(savedComment, CommentDto.class);
+		return commentDto;
 	}
 
 	@Override
-	public void deleteComment(Integer commentId) {
+	public List<Comment> getAllPostComment(Long postId) {
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new PostNotFoundException("Post with ID: " + postId + " is not Found"));
 
-		Comment com = this.commentRepo.findById(commentId)
-				.orElseThrow(() -> new ResourceNotFoundException("Comment", "CommentId", commentId));
-		this.commentRepo.delete(com);
+		return commentRepository.findAllCommentByPost(post);
 	}
 
+	@Override
+	public String deleteComment(Long commentId, CommentDto commentDto) {
+		Comment comment = commentRepository.findById(commentId).
+				orElseThrow(()-> new CommentNotFoundException("Comment with ID: "+ commentId + "is not found"));
+		comment.setContent(commentDto.getContent());
+		commentRepository.delete(comment);
+
+		return "Task Deleted Successfully";
+	}
 }

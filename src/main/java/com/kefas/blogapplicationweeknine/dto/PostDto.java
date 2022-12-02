@@ -3,34 +3,28 @@ package com.kefas.blogapplicationweeknine.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class PostDto {
-
-	private Integer postId;
-	
+	@NotBlank(message = "Title should not be empty")
 	private String title;
-	
+
+	@NotBlank(message = "Post body cannot be empty")
 	private String content;
-	
-	private String imageName;
-	
-	private Date addedDate;
 
-	private UserDto user;
+	@NotBlank(message = "Image URL should not be epmpty")
+	private String imageUrl;
 	
-	private Set<CommentDto> comments=new HashSet<>();
+	private LocalDateTime createdDate;
 
-	
-	
-	
-	
-	
-	
+	private LocalDateTime updatedDate;
+
+	@NotNull
+	private Long userId;
+
 }

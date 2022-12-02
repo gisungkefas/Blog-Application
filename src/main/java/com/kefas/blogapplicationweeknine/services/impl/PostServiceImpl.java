@@ -1,133 +1,129 @@
 package com.kefas.blogapplicationweeknine.services.impl;
 
 import com.kefas.blogapplicationweeknine.dto.PostDto;
+import com.kefas.blogapplicationweeknine.entities.Like;
 import com.kefas.blogapplicationweeknine.entities.Post;
 import com.kefas.blogapplicationweeknine.entities.User;
-import com.kefas.blogapplicationweeknine.exceptions.ResourceNotFoundException;
-import com.kefas.blogapplicationweeknine.repositories.PostRepo;
-import com.kefas.blogapplicationweeknine.repositories.UserRepo;
-import com.kefas.blogapplicationweeknine.response.PostResponse;
+import com.kefas.blogapplicationweeknine.exceptions.PostNotFoundException;
+import com.kefas.blogapplicationweeknine.exceptions.UserNotFoundException;
+import com.kefas.blogapplicationweeknine.repositories.LikeRepository;
+import com.kefas.blogapplicationweeknine.repositories.PostRepository;
+import com.kefas.blogapplicationweeknine.repositories.UserRepository;
 import com.kefas.blogapplicationweeknine.services.PostService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class PostServiceImpl implements PostService {
 
     @Autowired
-    private final PostRepo postRepo;
+    private PostRepository postRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepo userRepo;
+    private LikeRepository likeRepository;
 
     @Override
-    public PostDto createPost(PostDto postDto, Integer userId) {
+    public PostDto createPost(PostDto postDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with ID: "+ userId + " is not found"));
 
-        User user = this.userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User ", "User id", userId));
-
-
-        Post post = this.modelMapper.map(postDto, Post.class);
-        post.setImageName("logo.png");
-        post.setAddedDate(new Date());
-        post.setUser(user);
-
-        Post newPost = this.postRepo.save(post);
-
-        return this.modelMapper.map(newPost, PostDto.class);
-    }
-
-    @Override
-    public PostDto updatePost(PostDto postDto, Integer postId) {
-
-        Post post = this.postRepo.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post ", "post id", postId));
-
+        Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
-        post.setImageName(postDto.getImageName());
+        post.setImageUrl(postDto.getImageUrl());
+        postRepository.save(post);
 
-
-        Post updatedPost = this.postRepo.save(post);
-        return this.modelMapper.map(updatedPost, PostDto.class);
+        return postDto;
     }
 
     @Override
-    public void deletePost(Integer postId) {
+    public PostDto updatePost(PostDto postDto, Long postId) {
+        Post post = postRepository.findById(postId).
+                orElseThrow(()-> new PostNotFoundException("Post with ID: "+ postId +" is not found"));
 
-        Post post = this.postRepo.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post ", "post id", postId));
+        if(postDto.getTitle() != null && !postDto.getTitle().equals(post.getTitle())){
+            post.setTitle(postDto.getTitle());
+            post.setUpdatedDate(LocalDateTime.now());
+        }
 
-        this.postRepo.delete(post);
+        if(postDto.getContent() != null && !postDto.getContent().equals(post.getContent())){
+            post.setContent(postDto.getContent());
+            post.setUpdatedDate(LocalDateTime.now());
+        }
 
+        if (postDto.getImageUrl() != null && !postDto.getImageUrl().equals(post.getImageUrl())){
+            post.setImageUrl(postDto.getImageUrl());
+            post.setUpdatedDate(LocalDateTime.now());
+        }
+        postRepository.save(post);
+
+        return postDto;
     }
 
     @Override
-    public PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+    public String deletePost(PostDto postDto, Long postId) {
+        Post post = postRepository.findById(postId).
+                orElseThrow(()-> new PostNotFoundException("Post with ID: "+ postId +" is not found"));
 
-        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        postRepository.delete(post);
 
-        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
-
-        Page<Post> pagePost = this.postRepo.findAll(p);
-
-        List<Post> allPosts = pagePost.getContent();
-
-        List<PostDto> postDtos = allPosts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toList());
-
-        PostResponse postResponse = new PostResponse();
-
-        postResponse.setContent(postDtos);
-        postResponse.setPageNumber(pagePost.getNumber());
-        postResponse.setPageSize(pagePost.getSize());
-        postResponse.setTotalElements(pagePost.getTotalElements());
-
-        postResponse.setTotalPages(pagePost.getTotalPages());
-        postResponse.setLastPage(pagePost.isLast());
-
-        return postResponse;
+        return "Task Deleted Successfully";
     }
 
     @Override
-    public PostDto getPostById(Integer postId) {
-        Post post = this.postRepo.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "post id", postId));
-        return this.modelMapper.map(post, PostDto.class);
-    }
+    public Post getPostById(Long postId) {
 
-
-    @Override
-    public List<PostDto> getPostsByUser(Integer userId) {
-
-        User user = this.userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User ", "userId ", userId));
-        List<Post> posts = this.postRepo.findByUser(user);
-
-        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toList());
-
-        return postDtos;
+        return postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    throw new PostNotFoundException("Post with ID: " + postId + " Not Found");
+                });
     }
 
     @Override
-    public List<PostDto> searchPosts(String keyword) {
-        List<Post> posts = this.postRepo.searchByTitle("%" + keyword + "%");
-        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-        return postDtos;
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
     }
 
+//    @Override
+//    public List<PostDto> searchPosts(String keyword) {
+//        List<Post> posts = this.postRepo.searchByTitle("%" + keyword + "%");
+//        List<PostDto> postDto = posts.stream().map((post) -> this.mapper.map(post, PostDto.class)).collect(Collectors.toList());
+//        return postDto;
+//    }
+
+    @Override
+    public String likePost(Long postId, Long userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    throw new PostNotFoundException("Post with ID: " + postId + " Not Found");
+                });
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    throw new PostNotFoundException("User with ID: " + userId + " Not Found");
+                });
+
+        Optional<Like> liked = likeRepository.findByPostAndUser(post, user);
+
+        if (liked.isPresent()) {
+            likeRepository.delete(liked.get());
+            return "User Unliked Post";
+        }
+
+        Like like = new Like();
+        like.setPost(post);
+        like.setUser(user);
+
+        likeRepository.save(like);
+
+        return "User liked Post";
+    }
 }
