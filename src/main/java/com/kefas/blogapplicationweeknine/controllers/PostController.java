@@ -2,7 +2,6 @@ package com.kefas.blogapplicationweeknine.controllers;
 
 import com.kefas.blogapplicationweeknine.dto.PostDto;
 import com.kefas.blogapplicationweeknine.entities.Post;
-import com.kefas.blogapplicationweeknine.response.PagedResponse;
 import com.kefas.blogapplicationweeknine.services.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,21 +36,21 @@ public class PostController {
 
 	}
 
-	@DeleteMapping("/posts/{postId}")
-	public ResponseEntity<String> deletePost(@RequestBody PostDto postDto, @PathVariable Long postId){
-		return new ResponseEntity<>(postService.deletePost(postDto, postId), HttpStatus.ACCEPTED);
+	@DeleteMapping("/posts/{postId}/delete")
+	public ResponseEntity<String> deletePost(@PathVariable Long postId){
+		return new ResponseEntity<>(postService.deletePost(postId), HttpStatus.ACCEPTED);
 	}
 
-	@PutMapping("/posts/{postId}")
+	@PutMapping("/posts/{postId}/update")
 	public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable Long postId) {
 		PostDto updatePost = this.postService.updatePost(postDto, postId);
 		return new ResponseEntity<>(updatePost, HttpStatus.OK);
 
 	}
 
-//	@GetMapping("/posts/search/{keywords}")
-//	public ResponseEntity<List<PostDto>> searchPostByTitle(@PathVariable("keywords") String keywords) {
-//		List<PostDto> result = this.postService.searchPosts(keywords);
-//		return new ResponseEntity<>(result, HttpStatus.OK);
-//	}
+	@GetMapping(path = "{postId}/like/{userId}")
+	public ResponseEntity<String> likePost(@PathVariable Long postId, @PathVariable Long userId){
+		String msg = postService.likePost(postId, userId);
+		return new ResponseEntity<>(msg, HttpStatus.OK);
+	}
 }

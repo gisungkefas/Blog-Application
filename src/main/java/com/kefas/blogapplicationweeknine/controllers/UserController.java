@@ -23,6 +23,5 @@ public class UserController {
 	@PostMapping("/login")
 	public ResponseEntity<String> userLogin(@RequestBody UserDto userDto){
 		return new ResponseEntity<>(userService.userLogin(userDto), HttpStatus.ACCEPTED);
-
 	}
 }

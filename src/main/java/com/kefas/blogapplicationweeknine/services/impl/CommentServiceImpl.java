@@ -56,12 +56,11 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public String deleteComment(Long commentId, CommentDto commentDto) {
+	public String deleteComment(Long commentId) {
 		Comment comment = commentRepository.findById(commentId).
 				orElseThrow(()-> new CommentNotFoundException("Comment with ID: "+ commentId + "is not found"));
-		comment.setContent(commentDto.getContent());
 		commentRepository.delete(comment);
 
-		return "Task Deleted Successfully";
+		return "Comment Deleted Successfully";
 	}
 }

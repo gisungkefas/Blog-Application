@@ -20,18 +20,18 @@ public class CommentController {
 	@PostMapping("/post/{postId}/comment")
 	public ResponseEntity<CommentDto> createComment(@Valid @RequestBody CommentDto comment, @PathVariable Long postId) {
 		CommentDto createComment = this.commentService.createComment(comment, postId);
-		return new ResponseEntity<CommentDto>(createComment, HttpStatus.CREATED);
+		return new ResponseEntity<>(createComment, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/post/comments")
+	@GetMapping("/post/{postId}/comments")
 	public ResponseEntity<List<Comment>> getAllPostComment(@PathVariable Long postId){
 		List<Comment> comments = commentService.getAllPostComment(postId);
 		return new ResponseEntity<>(comments, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/comments/{commentId}/delete")
-	public ResponseEntity<String> deleteComment(@RequestBody CommentDto commentDto,@PathVariable Long commentId){
-		return new ResponseEntity<>(commentService.deleteComment(commentId, commentDto), HttpStatus.ACCEPTED);
+	public ResponseEntity<String> deleteComment(@PathVariable Long commentId){
+		return new ResponseEntity<>(commentService.deleteComment(commentId), HttpStatus.ACCEPTED);
 	}
 
 }

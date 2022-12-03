@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class CommentDto {
 
-	@NotBlank(message = "Comment body canot be blank")
+	@NotBlank(message = "Comment body cannot be blank")
 	private String content;
 
 	@NotNull

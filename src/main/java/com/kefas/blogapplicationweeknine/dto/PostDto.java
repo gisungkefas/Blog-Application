@@ -19,10 +19,6 @@ public class PostDto {
 
 	@NotBlank(message = "Image URL should not be epmpty")
 	private String imageUrl;
-	
-	private LocalDateTime createdDate;
-
-	private LocalDateTime updatedDate;
 
 	@NotNull
 	private Long userId;

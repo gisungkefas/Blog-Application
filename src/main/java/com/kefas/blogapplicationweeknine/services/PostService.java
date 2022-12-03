@@ -13,13 +13,11 @@ public interface PostService {
 
 	PostDto updatePost(PostDto postDto, Long postId);
 
-	String deletePost(PostDto postDto, Long postId);
+	String deletePost(Long postId);
 
 	Post getPostById(Long postId);
 
 	List<Post> getAllPosts();
-
-//	List<PostDto> searchPsts(String keyword);
 
 	String likePost(Long postId, Long userId);
 

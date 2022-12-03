@@ -39,8 +39,9 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post.setImageUrl(postDto.getImageUrl());
+        post.setUser(user);
         postRepository.save(post);
-
+        postDto.setUserId(userId);
         return postDto;
     }
 
@@ -64,18 +65,16 @@ public class PostServiceImpl implements PostService {
             post.setUpdatedDate(LocalDateTime.now());
         }
         postRepository.save(post);
-
         return postDto;
     }
 
     @Override
-    public String deletePost(PostDto postDto, Long postId) {
+    public String deletePost(Long postId) {
         Post post = postRepository.findById(postId).
                 orElseThrow(()-> new PostNotFoundException("Post with ID: "+ postId +" is not found"));
 
         postRepository.delete(post);
-
-        return "Task Deleted Successfully";
+        return "Post Deleted Successfully";
     }
 
     @Override
@@ -91,13 +90,6 @@ public class PostServiceImpl implements PostService {
     public List<Post> getAllPosts() {
         return postRepository.findAll();
     }
-
-//    @Override
-//    public List<PostDto> searchPosts(String keyword) {
-//        List<Post> posts = this.postRepo.searchByTitle("%" + keyword + "%");
-//        List<PostDto> postDto = posts.stream().map((post) -> this.mapper.map(post, PostDto.class)).collect(Collectors.toList());
-//        return postDto;
-//    }
 
     @Override
     public String likePost(Long postId, Long userId) {
@@ -115,15 +107,13 @@ public class PostServiceImpl implements PostService {
 
         if (liked.isPresent()) {
             likeRepository.delete(liked.get());
-            return "User Unliked Post";
+            return "User Unliked the Post";
         }
 
         Like like = new Like();
         like.setPost(post);
         like.setUser(user);
-
         likeRepository.save(like);
-
-        return "User liked Post";
+        return "User liked the Post";
     }
 }

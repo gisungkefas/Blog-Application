@@ -9,7 +9,4 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 	List<Post> findByUser(User user);
-
-//	@Query("select p from Post p where p.title like :key")
-//	List<Post> searchByTitle(@Param("key") String title);
 }
