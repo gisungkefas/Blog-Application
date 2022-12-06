@@ -1,5 +1,6 @@
 package com.kefas.blogapplicationweeknine.services.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kefas.blogapplicationweeknine.dto.PostDto;
 import com.kefas.blogapplicationweeknine.entities.Like;
 import com.kefas.blogapplicationweeknine.entities.Post;
@@ -11,11 +12,13 @@ import com.kefas.blogapplicationweeknine.repositories.PostRepository;
 import com.kefas.blogapplicationweeknine.repositories.UserRepository;
 import com.kefas.blogapplicationweeknine.services.PostService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +32,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private LikeRepository likeRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public PostDto createPost(PostDto postDto, Long userId) {
@@ -115,5 +121,12 @@ public class PostServiceImpl implements PostService {
         like.setUser(user);
         likeRepository.save(like);
         return "User liked the Post";
+    }
+
+    @Override
+    public List<PostDto> searchPosts(String keyword) {
+        List<Post> posts = this.postRepository.searchByTitle("%" + keyword + "%");
+        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return postDtos;
     }
 }

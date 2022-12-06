@@ -21,4 +21,6 @@ public interface PostService {
 
 	String likePost(Long postId, Long userId);
 
+	List<PostDto> searchPosts(String keyword);
+
 }
