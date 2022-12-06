@@ -34,12 +34,12 @@ class CommentControllerTest {
     @Test
     void testCreateComment() throws Exception {
         CommentDto commentDto = new CommentDto();
-        commentDto.setContent("Not all who wander are lost");
+        commentDto.setContent("Beautiful Design");
         commentDto.setUserId(123L);
         when(commentService.createComment((CommentDto) any(), (Long) any())).thenReturn(commentDto);
 
         CommentDto commentDto1 = new CommentDto();
-        commentDto1.setContent("Not all who wander are lost");
+        commentDto1.setContent("Beautiful Design");
         commentDto1.setUserId(123L);
         String content = (new ObjectMapper()).writeValueAsString(commentDto1);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v1/post/{postId}/comment", 123L)
@@ -51,7 +51,7 @@ class CommentControllerTest {
         actualPerformResult.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(
-                        MockMvcResultMatchers.content().string("{\"content\":\"Not all who wander are lost\",\"userId\":123}"));
+                        MockMvcResultMatchers.content().string("{\"content\":\"Beautiful Design\",\"userId\":123}"));
     }
 
     @Test

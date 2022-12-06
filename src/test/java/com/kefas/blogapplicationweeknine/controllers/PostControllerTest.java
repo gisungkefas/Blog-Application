@@ -38,16 +38,16 @@ class PostControllerTest {
     @Test
     void testCreatePost() throws Exception {
         PostDto postDto = new PostDto();
-        postDto.setContent("Not all who wander are lost");
+        postDto.setContent("Made with wool");
         postDto.setImageUrl("https://example.org/example");
-        postDto.setTitle("Dr");
+        postDto.setTitle("Ashubi");
         postDto.setUserId(123L);
         when(postService.createPost((PostDto) any(), (Long) any())).thenReturn(postDto);
 
         PostDto postDto1 = new PostDto();
-        postDto1.setContent("Not all who wander are lost");
+        postDto1.setContent("Made with wool");
         postDto1.setImageUrl("https://example.org/example");
-        postDto1.setTitle("Dr");
+        postDto1.setTitle("Ashubi");
         postDto1.setUserId(123L);
         String content = (new ObjectMapper()).writeValueAsString(postDto1);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v1/user/{userId}/createPost", 123L)
@@ -58,7 +58,7 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
                         .string(
-                                "{\"title\":\"Dr\",\"content\":\"Not all who wander are lost\",\"imageUrl\":\"https://example.org/example\","
+                                "{\"title\":\"Ashubi\",\"content\":\"Made with wool\",\"imageUrl\":\"https://example.org/example\","
                                         + "\"userId\":123}"));
     }
 
@@ -90,20 +90,20 @@ class PostControllerTest {
     @Test
     void testGetPostById() throws Exception {
         User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setFirstname("Jane");
-        user.setLastname("Doe");
-        user.setPassword("iloveyou");
-        user.setPhoneNumber("4105551212");
+        user.setEmail("kefas@example.org");
+        user.setFirstname("Kefas");
+        user.setLastname("Gisung");
+        user.setPassword("12345");
+        user.setPhoneNumber("0815551212");
         user.setUserId(123L);
 
         Post post = new Post();
         post.setComments(new ArrayList<>());
-        post.setContent("Not all who wander are lost");
+        post.setContent("Made with wool");
         post.setCreatedDate(LocalDateTime.of(1, 1, 1, 1, 1));
         post.setImageUrl("https://example.org/example");
         post.setPostId(123L);
-        post.setTitle("Dr");
+        post.setTitle("Ashubi");
         post.setUpdatedDate(LocalDateTime.of(1, 1, 1, 1, 1));
         post.setUser(user);
         when(postService.getPostById((Long) any())).thenReturn(post);
@@ -115,9 +115,9 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
                         .string(
-                                "{\"postId\":123,\"title\":\"Dr\",\"content\":\"Not all who wander are lost\",\"imageUrl\":\"https://example.org"
-                                        + "/example\",\"createdDate\":[1,1,1,1,1],\"updatedDate\":[1,1,1,1,1],\"user\":{\"userId\":123,\"firstname\":\"Jane"
-                                        + "\",\"lastname\":\"Doe\",\"email\":\"jane.doe@example.org\",\"phoneNumber\":\"4105551212\",\"password\":\"iloveyou\"},"
+                                "{\"postId\":123,\"title\":\"Ashubi\",\"content\":\"Made with wool\",\"imageUrl\":\"https://example.org"
+                                        + "/example\",\"createdDate\":[1,1,1,1,1],\"updatedDate\":[1,1,1,1,1],\"user\":{\"userId\":123,\"firstname\":\"Kefas"
+                                        + "\",\"lastname\":\"Gisung\",\"email\":\"kefas@example.org\",\"phoneNumber\":\"0815551212\",\"password\":\"12345\"},"
                                         + "\"comments\":[]}"));
     }
 
@@ -146,18 +146,45 @@ class PostControllerTest {
     }
 
     @Test
+    void testSearchPostByTitle() throws Exception {
+        when(postService.searchPosts((String) any())).thenReturn(new ArrayList<>());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v1/posts/search/{keywords}",
+                "Keywords");
+        MockMvcBuilders.standaloneSetup(postController)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.content().string("[]"));
+    }
+
+    @Test
+    void testSearchPostByTitle2() throws Exception {
+        when(postService.searchPosts((String) any())).thenReturn(new ArrayList<>());
+        MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/api/v1/posts/search/{keywords}",
+                "Keywords");
+        getResult.characterEncoding("Encoding");
+        MockMvcBuilders.standaloneSetup(postController)
+                .build()
+                .perform(getResult)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.content().string("[]"));
+    }
+
+    @Test
     void testUpdatePost() throws Exception {
         PostDto postDto = new PostDto();
-        postDto.setContent("Not all who wander are lost");
+        postDto.setContent("Made with wool");
         postDto.setImageUrl("https://example.org/example");
-        postDto.setTitle("Dr");
+        postDto.setTitle("Ashubi");
         postDto.setUserId(123L);
         when(postService.updatePost((PostDto) any(), (Long) any())).thenReturn(postDto);
 
         PostDto postDto1 = new PostDto();
-        postDto1.setContent("Not all who wander are lost");
+        postDto1.setContent("Made with wool");
         postDto1.setImageUrl("https://example.org/example");
-        postDto1.setTitle("Dr");
+        postDto1.setTitle("Ashubi");
         postDto1.setUserId(123L);
         String content = (new ObjectMapper()).writeValueAsString(postDto1);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/v1/posts/{postId}/update", 123L)
@@ -170,7 +197,7 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.content()
                         .string(
-                                "{\"title\":\"Dr\",\"content\":\"Not all who wander are lost\",\"imageUrl\":\"https://example.org/example\","
+                                "{\"title\":\"Ashubi\",\"content\":\"Made with wool\",\"imageUrl\":\"https://example.org/example\","
                                         + "\"userId\":123}"));
     }
 
