@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.kefas</groupId>
-    <artifactId>Week-eight-task</artifactId>
+    <artifactId>week-nine-task</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Week-eight-task</name>
+    <name>week-nine-task</name>
     <description>Daily Todo list for users</description>
     <properties>
         <java.version>17</java.version>
@@ -110,7 +110,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>spring-boot-docker</finalName>
+        <finalName>blog-app-week-nine</finalName>
     </build>
 
 </project>
